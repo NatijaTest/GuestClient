@@ -1,29 +1,307 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>GuestLauncher - 1.21.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuestClient v1.0 - Ultimate Minecraft Client</title>
     <style>
-        body { background-color: #0f0f0f; color: #fff; font-family: sans-serif; text-align: center; padding-top: 100px; }
-        h1 { color: #ff7700; text-shadow: 0 0 10px rgba(255,119,0,0.5); }
-        .download-btn {
-            display: inline-block; margin-top: 30px; padding: 15px 30px;
-            background: #ff7700; color: #000; font-weight: bold; text-decoration: none;
-            border-radius: 8px; box-shadow: 0 0 15px rgba(255,119,0,0.7); transition: 0.3s;
+        :root {
+            --primary: #ff7700;
+            --primary-glow: rgba(255, 119, 0, 0.6);
+            --bg-color: #08080a;
+            --card-bg: rgba(20, 20, 25, 0.85);
         }
-        .download-btn:hover { background: #ff9933; box-shadow: 0 0 25px rgba(255,153,51,1); }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #fff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255, 119, 0, 0.15) 0%, transparent 70%),
+                linear-gradient(0deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        /* HEADER & HERO SECTION */
+        header {
+            text-align: center;
+            padding: 60px 20px 30px;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--primary-glow);
+            animation: pulseGlow 2s infinite alternate;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        .author-tag {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 6px 16px;
+            background: rgba(255, 119, 0, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* DOWNLOAD BUTTON */
+        .btn-container {
+            text-align: center;
+            margin: 30px 0 50px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #000;
+            background: linear-gradient(135deg, #ff7700, #ff9933);
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 0 25px var(--primary-glow);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 153, 51, 0.9);
+        }
+
+        /* 3D PARALLAX INTERACTIVE BANNER */
+        .hero-banner-container {
+            max-width: 1000px;
+            margin: 0 auto 80px;
+            padding: 0 20px;
+            perspective: 1000px;
+        }
+
+        .interactive-card {
+            position: relative;
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 119, 0, 0.2);
+            border: 2px solid rgba(255, 119, 0, 0.4);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            cursor: pointer;
+        }
+
+        .interactive-card img {
+            width: 100%;
+            display: block;
+            border-radius: 18px;
+            pointer-events: none;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transform: translateZ(30px);
+        }
+
+        /* GALLERY SECTION */
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .gallery-grid {
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        .gallery-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(255, 119, 0, 0.3);
+        }
+
+        .gallery-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card-info {
+            padding: 20px;
+        }
+
+        .card-info h3 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .card-info p {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* ANIMATIONS */
+        @keyframes pulseGlow {
+            from { text-shadow: 0 0 15px var(--primary-glow); }
+            to { text-shadow: 0 0 35px rgba(255, 119, 0, 0.9); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #555;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
     </style>
 </head>
 <body>
-    <h1>GUEST//LAUNCHER</h1>
-    <p>Cyberpunk Minecraft 1.21.1 Client by Guest5214</p>
-    
-    <!-- Ссылка на ваш скачиваемый .exe файл -->
-    <a href="https://github.com/NatijaTest/GuestClient/releases/download/v1.0/GuestLauncher.exe" 
-       class="download-btn" 
-       download="GuestLauncher.exe">
-        📥 DOWNLOAD GUESTLAUNCHER .EXE
-    </a>
+
+    <!-- HEADER -->
+    <header>
+        <h1 class="title">GUEST//CLIENT v1.0</h1>
+        <p class="subtitle">ULTIMATE CYBERPUNK MINECRAFT CLIENT</p>
+        <div class="author-tag">РАЗРАБОТАНО GUEST5214</div>
+    </header>
+
+    <!-- DOWNLOAD BUTTON -->
+    <div class="btn-container">
+        <a href="https://github.com/NatijaTest/GuestClient/releases/download/v1.0/GuestLauncher.exe" 
+           class="download-btn" download>
+            <span>📥</span> СКАЧАТЬ GUESTCLIENT .EXE
+        </a>
+    </div>
+
+    <!-- MAIN 3D PARALLAX BANNER (Mishka qimirlaganda harakatlanadi) -->
+    <div class="hero-banner-container">
+        <div class="interactive-card" id="tiltCard">
+            <span class="card-badge">✨ 3D INTERACTIVE INTERFACE</span>
+            <!-- Bosh rasm (Gemini_Generated_Image_g6h34vg6h34vg6h3.jpg) -->
+            <img src="Gemini_Generated_Image_g6h34vg6h34vg6h3.jpg" alt="GuestClient Main Menu">
+        </div>
+    </div>
+
+    <!-- MODULES GALLERY -->
+    <h2 class="section-title">ОБЗОР МОДУЛЕЙ И МЕНЮ</h2>
+
+    <div class="gallery-grid">
+        <!-- 1. Combat -->
+        <div class="gallery-card">
+            <img src="Gemini_Generated_Image_g6h34vg6h34vg6h3.jpg" alt="Combat Menu">
+            <div class="card-info">
+                33;БОЙ (Combat)</h3>
+                <p>Килл-Аура, Аимбот, Анти-Отдача и Авто-Кристалл для абсолютного превосходства в PvP.</p>
+            </div>
+        </div>
+
+        <!-- 2. Movement -->
+        <div class="gallery-card">
+            <img src="Gemini_Generated_Image_f4ot38f4ot38f4ot.jpg" alt="Movement Menu">
+            <div class="card-info">
+                33;ДВИЖЕНИЕ (Movement)</h3>
+                <p>Режим полета (Fly), удержание скорости, передвижение по воде и зацеп по стенам.</p>
+            </div>
+        </div>
+
+        <!-- 3. World -->
+        <div class="gallery-card">
+            <img src="Gemini_Generated_Image_2iho82iho82iho82.jpg" alt="World Menu">
+            <div class="card-info">
+                33;МИР (World)</h3>
+                <p>Быстрое ломание блоков, Нукер (Nuker), авто-строительство мостов и быстрая еда.</p>
+            </div>
+        </div>
+
+        <!-- 4. Visuals & Commands -->
+        <div class="gallery-card">
+            <img src="Gemini_Generated_Image_hiqc5lhiqc5lhiqc.jpg" alt="Visuals Menu">
+            <div class="card-info">
+                33;ВИЗУАЛЫ И КОМАНДЫ</h3>
+                <p>ESP подстветка игроков, трассеры, полная яркость (Fullbright) и гибкая привязка клавиш.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 GuestClient. All rights reserved. Created by Guest5214.</p>
+    </footer>
+
+    <!-- 3D PARALLAX JAVASCRIPT -->
+    <script>
+        const card = document.getElementById('tiltCard');
+        const container = document.querySelector('.hero-banner-container');
+
+        container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            // Mishka harakatiga qarab burish burchagi (Tilt effect)
+            const rotateX = ((y - centerY) / centerY) * -12; 
+            const rotateY = ((x - centerX) / centerX) * 12;
+
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+
+        container.addEventListener('mouseleave', () => {
+            // Mishka rasmdan chiqqanda o'z holatiga qaytishi
+            card.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+    </footer>
 </body>
 </html>
